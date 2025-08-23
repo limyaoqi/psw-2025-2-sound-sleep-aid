@@ -36,12 +36,16 @@ dependencies:
   cupertino_icons: ^1.0.8
   firebase_core: ^4.0.0
   cloud_firestore: ^6.0.0
+  firebase_auth: ^6.0.1
+  google_sign_in: ^6.2.1
   provider: ^6.0.5 # 状态管理
   just_audio: ^0.9.36 # 音频播放
   audio_session: ^0.1.16 # 管理后台音频
   shared_preferences: ^2.2.2 # 保存用户设置
   path_provider: ^2.1.2 # 本地存储路径
   http: ^1.1.0 # 从 GitHub/Firebase 下载音频
+  just_audio_background: ^0.0.1-beta.17
+  permission_handler: ^12.0.1
 
 dev_dependencies:
   flutter_test:

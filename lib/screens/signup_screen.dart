@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/gradient_background.dart';
+import '../services/auth_service.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final _usernameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
+  bool _loading = false;
+
+  @override
+  void dispose() {
+    _usernameCtrl.dispose();
+    _emailCtrl.dispose();
+    _passwordCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,26 +53,50 @@ class SignupScreen extends StatelessWidget {
       ),
     );
 
-    Widget _ghostIcon(IconData icon) => Container(
-      width: 48,
-      height: 48,
-      decoration: BoxDecoration(
-        color: theme.cardColor.withOpacity(0.9),
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.10)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+    Widget _ghostIcon(IconData icon, {VoidCallback? onTap}) => GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: theme.cardColor.withOpacity(0.9),
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white.withOpacity(0.10)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Icon(icon, size: 22, color: onSurface),
       ),
-      child: Icon(icon, size: 22, color: onSurface),
     );
 
     Widget _signupButton() => GestureDetector(
-      onTap: () {}, // UI only
+      onTap: _loading
+          ? null
+          : () async {
+              setState(() => _loading = true);
+              try {
+                await AuthService().signUpWithEmail(
+                  _emailCtrl.text.trim(),
+                  _passwordCtrl.text,
+                );
+                if (mounted) {
+                  Navigator.pushReplacementNamed(context, '/home');
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Sign up failed')),
+                  );
+                }
+              } finally {
+                if (mounted) setState(() => _loading = false);
+              }
+            },
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -86,13 +129,19 @@ class SignupScreen extends StatelessWidget {
               ],
             ),
             alignment: Alignment.center,
-            child: Text(
-              'Sign up',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            child: _loading
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(
+                    'Sign up',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
           ),
         ],
       ),
@@ -164,6 +213,7 @@ class SignupScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         TextField(
+                          controller: _usernameCtrl,
                           decoration: _input(
                             'Username',
                             icon: Icons.person_outline_rounded,
@@ -171,6 +221,7 @@ class SignupScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         TextField(
+                          controller: _emailCtrl,
                           decoration: _input(
                             'Email',
                             icon: Icons.alternate_email_rounded,
@@ -178,6 +229,7 @@ class SignupScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         TextField(
+                          controller: _passwordCtrl,
                           decoration:
                               _input(
                                 'Password',
@@ -230,7 +282,27 @@ class SignupScreen extends StatelessWidget {
                   // Social signup ghost buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [_ghostIcon(Icons.g_mobiledata_rounded)],
+                    children: [
+                      _ghostIcon(
+                        Icons.g_mobiledata_rounded,
+                        onTap: () async {
+                          try {
+                            await AuthService().signInWithGoogle();
+                            if (context.mounted) {
+                              Navigator.pushReplacementNamed(context, '/home');
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Google sign-in failed'),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: 16),

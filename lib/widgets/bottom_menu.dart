@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class BottomMenu extends StatelessWidget {
+class BottomMenu extends StatefulWidget {
   final VoidCallback? onLibrary;
   final VoidCallback? onFavorites;
   final VoidCallback? onSettings;
@@ -11,6 +11,13 @@ class BottomMenu extends StatelessWidget {
     this.onFavorites,
     this.onSettings,
   });
+
+  @override
+  State<BottomMenu> createState() => _BottomMenuState();
+}
+
+class _BottomMenuState extends State<BottomMenu> {
+  bool _looping = false; // false=顺序播放, true=循环播放 (UI only)
 
   Widget _buildItem(
     BuildContext context, {
@@ -76,9 +83,18 @@ class BottomMenu extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            _buildItem(context, icon: Icons.playlist_play, onTap: onLibrary),
-            _buildItem(context, icon: Icons.timer, onTap: onFavorites),
-            _buildItem(context, icon: Icons.download, onTap: onSettings),
+            _buildItem(
+              context,
+              icon: Icons.playlist_play,
+              onTap: widget.onLibrary,
+            ),
+            _buildItem(context, icon: Icons.timer, onTap: widget.onFavorites),
+            _buildItem(
+              context,
+              icon: _looping ? Icons.repeat : Icons.format_list_numbered,
+              onTap: () => setState(() => _looping = !_looping),
+            ),
+            _buildItem(context, icon: Icons.download, onTap: widget.onSettings),
           ],
         ),
       ),

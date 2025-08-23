@@ -12,7 +12,12 @@
           "package_name": "com.sleepaid.app.sound_sleep_aid"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "443243207657-ddp12jtd1e87tddlk19ddhv3emgiffel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCBQAEhyqKDe1my9wv67vpV3m09bkETaxE"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443243207657-ddp12jtd1e87tddlk19ddhv3emgiffel.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -31,7 +41,20 @@
           "package_name": "com.yaoqi.sound_sleep_aid"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "443243207657-kkp6ekhe5v4l6dc2m4h1v9i29bj5cjvc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yaoqi.sound_sleep_aid",
+            "certificate_hash": "c7e522a0aab3f753818b7b395a0c83e99a25aa8d"
+          }
+        },
+        {
+          "client_id": "443243207657-ddp12jtd1e87tddlk19ddhv3emgiffel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCBQAEhyqKDe1my9wv67vpV3m09bkETaxE"
@@ -39,7 +62,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443243207657-ddp12jtd1e87tddlk19ddhv3emgiffel.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

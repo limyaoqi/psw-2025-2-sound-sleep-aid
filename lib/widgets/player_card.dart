@@ -4,7 +4,26 @@ import 'circular_player.dart';
 import 'control_buttons.dart';
 
 class PlayerCard extends StatelessWidget {
-  const PlayerCard({super.key});
+  final String title;
+  final String? subtitle;
+  final bool isPlaying;
+  final VoidCallback? onPlay;
+  final VoidCallback? onPause;
+  final VoidCallback? onNext;
+  final VoidCallback? onPrevious;
+  final double progress; // 0..1
+
+  const PlayerCard({
+    super.key,
+    this.title = 'No track',
+    this.subtitle,
+    this.isPlaying = false,
+    this.onPlay,
+    this.onPause,
+    this.onNext,
+    this.onPrevious,
+    this.progress = 0.0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,21 +52,42 @@ class PlayerCard extends StatelessWidget {
             // Player
             CircularPlayer(
               size: 320,
+              progress: progress,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.album, size: 72, color: Colors.grey.shade700),
                   const SizedBox(height: 8),
-                  Text('No track', style: theme.textTheme.titleMedium),
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.white70,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ],
               ),
             ),
 
             const SizedBox(height: 14),
 
-            // Controls (UI only)
-            const ControlButtons(isPlaying: false),
+            // Controls
+            ControlButtons(
+              isPlaying: isPlaying,
+              onPlay: onPlay,
+              onPause: onPause,
+              onNext: onNext,
+              onPrevious: onPrevious,
+            ),
 
             const SizedBox(height: 6),
           ],
