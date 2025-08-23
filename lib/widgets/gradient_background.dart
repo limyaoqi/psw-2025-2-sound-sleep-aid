@@ -12,9 +12,12 @@ class GradientBackground extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF0f2027), // 深色蓝灰
-            Color(0xFF203a43), // 蓝绿
-            Color(0xFF2c5364), // 青蓝
+            Color(0xFF1a0033), // 深紫黑
+            Color(0xFF3a0ca3), // 紫蓝
+            Color(0xFF7209b7), // 亮紫
+            // Color(0xFF120022), // 更深的紫黑
+            // Color(0xFF2a0880), // 更深的紫蓝
+            // Color(0xFF5a078f), // 更暗的亮紫
           ],
         ),
       ),
