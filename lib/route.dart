@@ -16,11 +16,35 @@ class AppRouter {
   static const String signup = '/signup';
 
   static Map<String, WidgetBuilder> get routes => {
-    '/': (context) => const HomeScreen(),
+    '/': (context) => const _AuthGate(),
     home: (context) => const HomeScreen(),
     login: (context) => const LoginScreen(),
     signup: (context) => const SignupScreen(),
   };
 
-  static String initialRoute() => AuthStub.isLoggedIn ? home : login;
+  static String initialRoute() => '/';
+}
+
+class _AuthGate extends StatefulWidget {
+  const _AuthGate();
+  @override
+  State<_AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<_AuthGate> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final dest = AuthStub.isLoggedIn ? AppRouter.home : AppRouter.login;
+      Navigator.of(context).pushReplacementNamed(dest);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
+  }
 }

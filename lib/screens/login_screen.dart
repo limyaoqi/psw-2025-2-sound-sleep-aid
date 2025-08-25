@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:async';
 
 import '../widgets/gradient_background.dart';
 import '../services/auth_service.dart';
@@ -14,12 +16,31 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   bool _loading = false;
+  bool _isOnline = true;
+  StreamSubscription<List<ConnectivityResult>>? _connSub;
 
   @override
   void dispose() {
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
+    _connSub?.cancel();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _watchConnectivity();
+  }
+
+  void _watchConnectivity() async {
+    final initial = await Connectivity().checkConnectivity();
+    final online = initial != ConnectivityResult.none;
+    if (mounted) setState(() => _isOnline = online);
+    _connSub = Connectivity().onConnectivityChanged.listen((results) {
+      final on = results.any((r) => r != ConnectivityResult.none);
+      if (mounted && on != _isOnline) setState(() => _isOnline = on);
+    });
   }
 
   @override
@@ -244,6 +265,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 16),
                         _loginButton(),
+                        if (!_isOnline) ...[
+                          const SizedBox(height: 10),
+                          TextButton.icon(
+                            onPressed: () => Navigator.pushReplacementNamed(
+                              context,
+                              '/home',
+                            ),
+                            icon: const Icon(Icons.wifi_off_rounded),
+                            label: const Text('Continue offline'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: onSurface,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

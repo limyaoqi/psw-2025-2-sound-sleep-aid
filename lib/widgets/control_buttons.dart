@@ -6,6 +6,9 @@ class ControlButtons extends StatelessWidget {
   final VoidCallback? onNext;
   final VoidCallback? onPrevious;
   final bool isPlaying;
+  // Enable/disable state for edge cases
+  final bool previousEnabled;
+  final bool nextEnabled;
 
   const ControlButtons({
     super.key,
@@ -14,19 +17,39 @@ class ControlButtons extends StatelessWidget {
     this.onNext,
     this.onPrevious,
     this.isPlaying = false,
+    this.previousEnabled = true,
+    this.nextEnabled = true,
   });
+
+  void _showToast(BuildContext context, String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(milliseconds: 1200),
+        ),
+      );
+  }
 
   Widget _smallButton(
     BuildContext context, {
     required IconData icon,
-    VoidCallback? onTap,
+    required bool disabled,
+    required VoidCallback? onTap,
+    String? disabledMessage,
   }) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final bg = Theme.of(context).cardColor.withOpacity(0.9);
-    final disabled = onTap == null;
     return InkWell(
       borderRadius: BorderRadius.circular(28),
-      onTap: onTap,
+      onTap: disabled
+          ? () {
+              if (disabledMessage != null && disabledMessage.isNotEmpty) {
+                _showToast(context, disabledMessage);
+              }
+            }
+          : onTap,
       child: Container(
         width: 52,
         height: 52,
@@ -124,11 +147,23 @@ class ControlButtons extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _smallButton(context, icon: Icons.skip_previous, onTap: onPrevious),
+          _smallButton(
+            context,
+            icon: Icons.skip_previous,
+            disabled: !previousEnabled,
+            onTap: onPrevious,
+            disabledMessage: 'Already the first track',
+          ),
           const SizedBox(width: 12),
           _playPauseButton(context),
           const SizedBox(width: 12),
-          _smallButton(context, icon: Icons.skip_next, onTap: onNext),
+          _smallButton(
+            context,
+            icon: Icons.skip_next,
+            disabled: !nextEnabled,
+            onTap: onNext,
+            disabledMessage: 'Already the last track',
+          ),
         ],
       ),
     );

@@ -12,6 +12,9 @@ class PlayerCard extends StatelessWidget {
   final VoidCallback? onNext;
   final VoidCallback? onPrevious;
   final double progress; // 0..1
+  // edge control flags
+  final bool canNext;
+  final bool canPrevious;
 
   const PlayerCard({
     super.key,
@@ -23,6 +26,8 @@ class PlayerCard extends StatelessWidget {
     this.onNext,
     this.onPrevious,
     this.progress = 0.0,
+    this.canNext = true,
+    this.canPrevious = true,
   });
 
   @override
@@ -87,6 +92,8 @@ class PlayerCard extends StatelessWidget {
               onPause: onPause,
               onNext: onNext,
               onPrevious: onPrevious,
+              nextEnabled: canNext,
+              previousEnabled: canPrevious,
             ),
 
             const SizedBox(height: 6),

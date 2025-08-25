@@ -46,6 +46,7 @@ dependencies:
   http: ^1.1.0 # 从 GitHub/Firebase 下载音频
   just_audio_background: ^0.0.1-beta.17
   permission_handler: ^12.0.1
+  connectivity_plus: ^6.0.5
 
 dev_dependencies:
   flutter_test:

@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 
-class BottomMenu extends StatefulWidget {
+class BottomMenu extends StatelessWidget {
   final VoidCallback? onLibrary;
-  final VoidCallback? onFavorites;
-  final VoidCallback? onSettings;
+  final VoidCallback? onTimer;
+  final VoidCallback? onDownload;
+  final bool isLooping; // false=顺序播放, true=循环播放
+  final VoidCallback? onToggleLoop;
 
   const BottomMenu({
     super.key,
     this.onLibrary,
-    this.onFavorites,
-    this.onSettings,
+    this.onTimer,
+    this.onDownload,
+    this.onToggleLoop,
+    this.isLooping = false,
   });
-
-  @override
-  State<BottomMenu> createState() => _BottomMenuState();
-}
-
-class _BottomMenuState extends State<BottomMenu> {
-  bool _looping = false; // false=顺序播放, true=循环播放 (UI only)
 
   Widget _buildItem(
     BuildContext context, {
@@ -86,15 +83,15 @@ class _BottomMenuState extends State<BottomMenu> {
             _buildItem(
               context,
               icon: Icons.playlist_play,
-              onTap: widget.onLibrary,
+              onTap: onLibrary,
             ),
-            _buildItem(context, icon: Icons.timer, onTap: widget.onFavorites),
+            _buildItem(context, icon: Icons.timer, onTap: onTimer),
             _buildItem(
               context,
-              icon: _looping ? Icons.repeat : Icons.format_list_numbered,
-              onTap: () => setState(() => _looping = !_looping),
+              icon: isLooping ? Icons.repeat : Icons.format_list_numbered,
+              onTap: onToggleLoop,
             ),
-            _buildItem(context, icon: Icons.download, onTap: widget.onSettings),
+            _buildItem(context, icon: Icons.download, onTap: onDownload),
           ],
         ),
       ),
