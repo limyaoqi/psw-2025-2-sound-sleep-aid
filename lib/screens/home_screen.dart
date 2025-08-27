@@ -9,6 +9,7 @@ import '../services/preferences_service.dart';
 import '../models/audio_track.dart';
 import '../services/audio_service.dart';
 import '../services/download_service.dart';
+import '../services/app_state.dart';
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:just_audio/just_audio.dart' show ProcessingState;
@@ -148,7 +149,11 @@ class _HomeScreenState extends State<HomeScreen> {
     _playingSub = _audio.player.playingStream.listen((playing) {
       if (!mounted) return;
       setState(() => _isPlaying = playing);
+      // reflect global flag
+      AppState.I.isAudioPlaying.value = playing;
     });
+    // initialize once
+    AppState.I.isAudioPlaying.value = _audio.player.playing;
 
     // position/duration to compute progress
     _posSub?.cancel();
@@ -196,8 +201,10 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (_) {}
   }
 
-  bool get _canPrevious => _tracks.isNotEmpty && (_looping || _currentIndex > 0);
-  bool get _canNext => _tracks.isNotEmpty && (_looping || _currentIndex < _tracks.length - 1);
+  bool get _canPrevious =>
+      _tracks.isNotEmpty && (_looping || _currentIndex > 0);
+  bool get _canNext =>
+      _tracks.isNotEmpty && (_looping || _currentIndex < _tracks.length - 1);
 
   void _toast(String msg) {
     if (!mounted) return;
@@ -330,10 +337,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void _setSleepTimer(Duration d) {
     _sleepTimer?.cancel();
     _sleepEnd = DateTime.now().add(d);
+    AppState.I.hasSleepTimer.value = true;
     _sleepTimer = Timer(d, () async {
       await _audio.pause();
       _sleepTimer = null;
       _sleepEnd = null;
+      AppState.I.hasSleepTimer.value = false;
       if (mounted) {
         _toast('Timer ended');
         setState(() {});
@@ -348,6 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _sleepTimer!.cancel();
       _sleepTimer = null;
       _sleepEnd = null;
+      AppState.I.hasSleepTimer.value = false;
       _toast('Timer canceled');
       setState(() {});
     }
@@ -393,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _durSub?.cancel();
     _sleepTimer?.cancel();
     _connSub?.cancel();
-  _stateSub?.cancel();
+    _stateSub?.cancel();
     _audio.dispose();
     super.dispose();
   }
@@ -465,9 +475,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           _tracks[_currentIndex].localPath == null &&
                           _isOnline)
                       ? _downloadCurrent
-            : null,
-          isLooping: _looping,
-          onToggleLoop: () => setState(() => _looping = !_looping),
+                      : null,
+                  isLooping: _looping,
+                  onToggleLoop: () => setState(() => _looping = !_looping),
                 ),
               ),
             ],

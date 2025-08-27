@@ -4,7 +4,7 @@ class BottomMenu extends StatelessWidget {
   final VoidCallback? onLibrary;
   final VoidCallback? onTimer;
   final VoidCallback? onDownload;
-  final bool isLooping; // false=顺序播放, true=循环播放
+  final bool isLooping; // false=顺序播放, true=单曲循环
   final VoidCallback? onToggleLoop;
 
   const BottomMenu({
@@ -80,15 +80,11 @@ class BottomMenu extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            _buildItem(
-              context,
-              icon: Icons.playlist_play,
-              onTap: onLibrary,
-            ),
+            _buildItem(context, icon: Icons.playlist_play, onTap: onLibrary),
             _buildItem(context, icon: Icons.timer, onTap: onTimer),
             _buildItem(
               context,
-              icon: isLooping ? Icons.repeat : Icons.format_list_numbered,
+              icon: isLooping ? Icons.repeat_one : Icons.format_list_numbered,
               onTap: onToggleLoop,
             ),
             _buildItem(context, icon: Icons.download, onTap: onDownload),
